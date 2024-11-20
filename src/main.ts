@@ -71,10 +71,10 @@ async function serve(filename: string, options: ServeOptions) {
     }
 }
 
-const cli = cac('vite-serve')
+const cli = cac('bing-bing-preview')
 
 cli
-    .command('<path>', `开启一个小服务展示你的组件`)
+    .command('<path>', `开启一个本地服务展示你的组件`)
     .option('--host [host]', `[字符串类型] 指定地址`)
     .option('--port <port>', `[数字类型] 指定端口`)
     .option(

@@ -89,9 +89,9 @@ function serve(filename, options) {
         }
     });
 }
-const cli = (0, cac_1.cac)('vite-serve');
+const cli = (0, cac_1.cac)('bing-bing-preview');
 cli
-    .command('<path>', `开启一个小服务展示你的组件`)
+    .command('<path>', `开启一个本地服务展示你的组件`)
     .option('--host [host]', `[字符串类型] 指定地址`)
     .option('--port <port>', `[数字类型] 指定端口`)
     .option('-t, --type <type>', `[string] 组件类型 (目前仅支持vue3单文件组件)`)

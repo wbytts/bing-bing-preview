@@ -41,23 +41,27 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const cac_1 = require("cac");
 const picocolors_1 = __importDefault(require("picocolors"));
-const version = JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(__dirname, '../package.json')).toString()).version;
-const modulePath = fs_1.default.existsSync(path_1.default.resolve(__dirname, '../node_modules/'))
-    ? path_1.default.resolve(__dirname, '../node_modules/')
-    : path_1.default.resolve(__dirname, '../../');
-function getTypeByExt(filepath) {
-    const ext = path_1.default.extname(filepath);
-    if (ext === '.vue') {
-        return 'vue';
-    }
-    throw new Error('错啦，这是不识别的扩展名');
-}
+const version = JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(__dirname, "../package.json")).toString()).version;
+const modulePath = fs_1.default.existsSync(path_1.default.resolve(__dirname, "../node_modules/"))
+    ? path_1.default.resolve(__dirname, "../node_modules/")
+    : path_1.default.resolve(__dirname, "../../");
+// function getTypeByExt(filepath: string) {
+//   const ext = path.extname(filepath);
+//   console.log(colors.cyan(`\n解析文件扩展名: ${ext}`));
+//   if (ext === ".vue") {
+//     return "vue";
+//   }
+//   if (/^\.[jt]sx?$/.test(ext)) {
+//     return "vue";
+//   }
+//   throw new Error("错啦，这是不识别的扩展名");
+// }
 function serve(filename, options) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const filepath = path_1.default.resolve(filename).replaceAll("\\", "/");
-            console.log(picocolors_1.default.cyan(`\n解析文件完整地址: ${filepath}`));
-            const type = options.type || getTypeByExt(filepath);
+            console.log(picocolors_1.default.bgGreenBright(`\n解析文件完整地址: ${filepath}`));
+            const type = options.type || "vue";
             const module = yield Promise.resolve(`${`./${type}.js`}`).then(s => __importStar(require(s)));
             const server = yield (0, vite_1.createServer)({
                 root: modulePath,
@@ -68,12 +72,10 @@ function serve(filename, options) {
                     host: options.host,
                     port: options.port,
                     watch: {
-                        ignored: ['/'],
+                        ignored: ["/"],
                     },
                 },
-                plugins: [
-                    yield module.loadPlugins(filepath),
-                ],
+                plugins: [yield module.loadPlugins(filepath)],
             });
             server.watcher.add(`${path_1.default.dirname(filepath)}/**`);
             yield server.listen();
@@ -84,17 +86,19 @@ function serve(filename, options) {
             server.printUrls();
         }
         catch (e) {
-            console.error(picocolors_1.default.red(`启动服务器出错啦 :\n${e.stack}`), { error: e });
+            console.error(picocolors_1.default.red(`启动服务器出错啦 :\n${e.stack}`), {
+                error: e,
+            });
             process.exit(1);
         }
     });
 }
-const cli = (0, cac_1.cac)('bing-bing-preview');
+const cli = (0, cac_1.cac)("bing-bing-preview");
 cli
-    .command('<path>', `开启一个本地服务展示你的组件`)
-    .option('--host [host]', `[字符串类型] 指定地址`)
-    .option('--port <port>', `[数字类型] 指定端口`)
-    .option('-t, --type <type>', `[string] 组件类型 (目前仅支持vue3单文件组件)`)
+    .command("<path>", `开启一个本地服务展示你的组件`)
+    .option("--host [host]", `[字符串类型] 指定地址`)
+    .option("--port <port>", `[数字类型] 指定端口`)
+    .option("-t, --type <type>", `[字符串类型] 组件类型 (目前仅支持vue3单文件组件)`)
     .action(serve);
 cli.help();
 cli.version(version);

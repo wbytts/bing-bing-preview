@@ -45,24 +45,13 @@ const version = JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(__di
 const modulePath = fs_1.default.existsSync(path_1.default.resolve(__dirname, "../node_modules/"))
     ? path_1.default.resolve(__dirname, "../node_modules/")
     : path_1.default.resolve(__dirname, "../../");
-// function getTypeByExt(filepath: string) {
-//   const ext = path.extname(filepath);
-//   console.log(colors.cyan(`\n解析文件扩展名: ${ext}`));
-//   if (ext === ".vue") {
-//     return "vue";
-//   }
-//   if (/^\.[jt]sx?$/.test(ext)) {
-//     return "vue";
-//   }
-//   throw new Error("错啦，这是不识别的扩展名");
-// }
 function serve(filename, options) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const filepath = path_1.default.resolve(filename).replaceAll("\\", "/");
             console.log(picocolors_1.default.bgGreenBright(`\n解析文件完整地址: ${filepath}`));
             const type = options.type || "vue";
-            const module = yield Promise.resolve(`${`./${type}.js`}`).then(s => __importStar(require(s)));
+            const module = yield Promise.resolve(`${`./handlers/${type}.js`}`).then(s => __importStar(require(s)));
             const server = yield (0, vite_1.createServer)({
                 root: modulePath,
                 optimizeDeps: {
@@ -78,11 +67,14 @@ function serve(filename, options) {
                 plugins: [yield module.loadPlugins(filepath)],
             });
             server.watcher.add(`${path_1.default.dirname(filepath)}/**`);
+            // 启动服务器
             yield server.listen();
+            // 打印启动信息
             console.log(picocolors_1.default.cyan(`\n  冰冰超级预览 v${version}`) +
                 `   正在运行: ` +
                 picocolors_1.default.green(filename) +
                 ` at:\n`);
+            // 打印访问地址
             server.printUrls();
         }
         catch (e) {
@@ -93,6 +85,7 @@ function serve(filename, options) {
         }
     });
 }
+// CLI 部分
 const cli = (0, cac_1.cac)("bing-bing-preview");
 cli
     .command("<path>", `开启一个本地服务展示你的组件`)

@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs";
 import { cac } from "cac";
 import colors from "picocolors";
+import type { ServeOptions } from "./types";
 
 const version = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "../package.json")).toString()
@@ -13,31 +14,12 @@ const modulePath = fs.existsSync(path.resolve(__dirname, "../node_modules/"))
   ? path.resolve(__dirname, "../node_modules/")
   : path.resolve(__dirname, "../../");
 
-interface ServeOptions {
-  host?: string;
-  port?: number;
-  type?: string;
-  preflight: boolean;
-}
-
-// function getTypeByExt(filepath: string) {
-//   const ext = path.extname(filepath);
-//   console.log(colors.cyan(`\n解析文件扩展名: ${ext}`));
-//   if (ext === ".vue") {
-//     return "vue";
-//   }
-//   if (/^\.[jt]sx?$/.test(ext)) {
-//     return "vue";
-//   }
-//   throw new Error("错啦，这是不识别的扩展名");
-// }
-
 async function serve(filename: string, options: ServeOptions) {
   try {
     const filepath = path.resolve(filename).replaceAll("\\", "/");
     console.log(colors.bgGreenBright(`\n解析文件完整地址: ${filepath}`));
     const type = options.type || "vue";
-    const module = await import(`./${type}.js`);
+    const module = await import(`./handlers/${type}.js`);
     const server = await createServer({
       root: modulePath,
       optimizeDeps: {
@@ -54,8 +36,10 @@ async function serve(filename: string, options: ServeOptions) {
     });
     server.watcher.add(`${path.dirname(filepath)}/**`);
 
+    // 启动服务器
     await server.listen();
 
+    // 打印启动信息
     console.log(
       colors.cyan(`\n  冰冰超级预览 v${version}`) +
         `   正在运行: ` +
@@ -63,6 +47,7 @@ async function serve(filename: string, options: ServeOptions) {
         ` at:\n`
     );
 
+    // 打印访问地址
     server.printUrls();
   } catch (e) {
     console.error(colors.red(`启动服务器出错啦 :\n${(e as Error).stack}`), {
@@ -71,6 +56,9 @@ async function serve(filename: string, options: ServeOptions) {
     process.exit(1);
   }
 }
+
+
+// CLI 部分
 
 const cli = cac("bing-bing-preview");
 

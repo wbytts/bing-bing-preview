@@ -17,32 +17,33 @@ exports.loadPlugins = loadPlugins;
 const vite_1 = require("vite");
 const plugin_vue_1 = __importDefault(require("@vitejs/plugin-vue"));
 const plugin_vue_jsx_1 = __importDefault(require("@vitejs/plugin-vue-jsx"));
-exports.prebundles = ['vue'];
+exports.prebundles = ["vue"];
 function loadPlugins(filepath) {
     return __awaiter(this, void 0, void 0, function* () {
         return [
             {
-                name: 'index',
+                name: "index",
                 configureServer: (server) => {
                     server.middlewares.use((req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                        if (req.url !== '/')
+                        if (req.url !== "/")
                             return next();
-                        const html = yield server.transformIndexHtml(req.url, `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-</head>
-<body>
-<div id="app"></div>
-<script type="module">
-  import { createApp } from 'vue'
-  import App from '/@fs/${filepath}'
-  const app = createApp(App)
-  app.mount('#app')
-</script>
-</body>
-</html>`, req.originalUrl);
-                        return (0, vite_1.send)(req, res, html, 'html', {});
+                        const html = yield server.transformIndexHtml(req.url, 
+                        /*html*/ `<!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8"/>
+            </head>
+            <body>
+              <div id="app"></div>
+              <script type="module">
+                import { createApp } from 'vue'
+                import App from '/@fs/${filepath}'
+                const app = createApp(App)
+                app.mount('#app')
+              </script>
+            </body>
+            </html>`, req.originalUrl);
+                        return (0, vite_1.send)(req, res, html, "html", {});
                     }));
                 },
             },

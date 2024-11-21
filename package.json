@@ -1,7 +1,7 @@
 {
   "name": "bing-bing-preview",
   "version": "0.0.5",
-  "description": "",
+  "description": "一个用来预览各种文件的工具",
   "bin": "dist/main.js",
   "files": [
     "dist/"
@@ -25,5 +25,10 @@
   "devDependencies": {
     "@types/node": "^22.9.1",
     "typescript": "^5.6.3"
+  },
+  "homepage": "https://github.com/wbytts/bing-bing-preview",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wbytts/bing-bing-preview.git"
   }
 }
